@@ -5,10 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const mainDiv = document.querySelector('.main');
   const ul = document.getElementById('invitedList');
   
+  //creates de cons
   const div = document.createElement('div');
   const filterLabel = document.createElement('label');
   const filterCheckBox = document.createElement('input');
-  
+
   filterLabel.textContent = "Ocultar los que no hayan respondido";
   filterCheckBox.type = 'checkbox';
   div.appendChild(filterLabel);
@@ -46,13 +47,15 @@ document.addEventListener('DOMContentLoaded', () => {
       li.appendChild(element); 
       return element;
     }
-    
+
     const li = document.createElement('li');
+     
     appendToLI('span', 'textContent', text);     
     appendToLI('label', 'textContent', 'Confirmed')
-      .appendChild(createElement('input', 'type', 'checkbox'));
+    .appendChild(createElement('input', 'type', 'checkbox'));
     appendToLI('button', 'textContent', 'edit');
     appendToLI('button', 'textContent', 'remove');
+    
     return li;
   }
   
@@ -65,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
     
   ul.addEventListener('change', (e) => {
-    const checkbox = event.target;
+    const checkbox = e.target;
     const checked = checkbox.checked;
     const listItem = checkbox.parentNode.parentNode;
     
@@ -108,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // select and run action in button's name
       nameActions[action]();
     }
-  });  
+  }); 
 });  
   
   

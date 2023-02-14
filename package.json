@@ -4,11 +4,12 @@
   "description": "app bodas",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "json-server --watch novios.json"
   },
   "author": "Carlos Tessier",
   "license": "ISC",
   "dependencies": {
-    "json-server": "^0.17.1"
+    "json-server": "^0.17.1",
+    "live-server": "^1.2.2"
   }
 }
