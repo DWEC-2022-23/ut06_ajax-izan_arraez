@@ -48,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return element;
     }
 
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET',"../novios.json");
+    xhr.send();
     const li = document.createElement('li');
      
     appendToLI('span', 'textContent', text);     
