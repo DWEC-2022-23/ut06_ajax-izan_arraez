@@ -4,11 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const mainDiv = document.querySelector('.main');
   const ul = document.getElementById('invitedList');
-  
+  const lis = document.createElement('li');
+
   //creates de cons
   const div = document.createElement('div');
   const filterLabel = document.createElement('label');
   const filterCheckBox = document.createElement('input');
+
+  const xhr = new XMLHttpRequest();
 
   filterLabel.textContent = "Ocultar los que no hayan respondido";
   filterCheckBox.type = 'checkbox';
@@ -43,31 +46,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function appendToLI(elementName, property, value) {
-      const element = createElement(elementName, property, value);     
+      const element = createElement(elementName, property, value);
       li.appendChild(element); 
       return element;
-    }
+    } 
 
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET',"../novios.json");
-    xhr.send();
     const li = document.createElement('li');
-     
-    appendToLI('span', 'textContent', text);     
-    appendToLI('label', 'textContent', 'Confirmed')
-    .appendChild(createElement('input', 'type', 'checkbox'));
-    appendToLI('button', 'textContent', 'edit');
-    appendToLI('button', 'textContent', 'remove');
-    
+
+      appendToLI('span', 'textContent', text);     
+      appendToLI('label', 'textContent', 'Confirmed')
+      .appendChild(createElement('input', 'type', 'checkbox'));
+      appendToLI('button', 'textContent', 'edit');
+      appendToLI('button', 'textContent', 'remove');
+  
     return li;
-  }
+  };
   
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = input.value;
-    input.value = '';
-    const li = createLI(text);
-    ul.appendChild(li);
+    if(text != ""){
+      input.value = '';
+      const li = createLI(text);
+      ul.appendChild(li);
+    }
   });
     
   ul.addEventListener('change', (e) => {
@@ -115,6 +117,55 @@ document.addEventListener('DOMContentLoaded', () => {
       nameActions[action]();
     }
   }); 
+
+  const add = async (dato)=>{
+    try {
+      const añadir = await new Promise((resolve,reject)=>{
+        xhr.open('GET',"http://localhost:3000/invitados");
+        xhr.onload = ()=>{resolve(xhr.responseText)};
+        xhr.onerror = ()=>{reject(xhr.statusText)};
+        xhr.send(JSON.stringify(data));
+      });
+      const datos = JSON.parse(añadir);
+      console.log(datos);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const update = async (id,dato)=>{
+    try {
+      const nuevo = await new Promise((resolve,reject)=>{
+        xhr.open('GET',"http://localhost:3000/invitados");
+        xhr.onload = ()=>{resolve(xhr.responseText)};
+        xhr.onerror = ()=>{reject(xhr.statusText)};
+        xhr.send(JSON.stringify(data));
+      });
+      const datos = JSON.parse(nuevo);
+      console.log(datos);
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+const open = async ()=>{
+  try {
+    const abrir = await new Promise((resolve,reject)=>{
+      xhr.open('GET',"http://localhost:3000/invitados");
+      xhr.onload = ()=>{resolve(xhr.responseText)};
+      xhr.onerror = ()=>{reject(xhr.statusText)};
+      xhr.send();
+    });
+    const datos = JSON.parse(abrir);
+    for(const lso of datos){
+      const li = createLI(lso.nombre);
+      ul.appendChild(li);
+    }
+  } catch (error) {
+    alert(error)
+  }
+}
+open();
 });  
   
   
