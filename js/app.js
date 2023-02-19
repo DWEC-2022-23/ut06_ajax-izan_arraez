@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterCheckBox = document.createElement('input');
 
   const xhr = new XMLHttpRequest();
+  const url = "http://localhost:3000/invitados";
+  var ident = 2;
+  var invitados = [];
 
   filterLabel.textContent = "Ocultar los que no hayan respondido";
   filterCheckBox.type = 'checkbox';
@@ -66,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const text = input.value;
     if(text != ""){
+      var valor = {"id":ident++,"nombre":text,"confirmado":false}
+      add(valor);
       input.value = '';
       const li = createLI(text);
       ul.appendChild(li);
@@ -93,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const nameActions = {
         remove: () => {
           ul.removeChild(li);
+          dele(e.target.id);
         },
         edit: () => {
           const span = li.firstElementChild;
@@ -109,7 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
           span.textContent = input.value;
           li.insertBefore(span, input);
           li.removeChild(input);
-          button.textContent = 'edit';        
+          button.textContent = 'edit';
+          update(e.target.id,span);     
         }
       };
       
@@ -121,37 +128,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const add = async (dato)=>{
     try {
       const añadir = await new Promise((resolve,reject)=>{
-        xhr.open('GET',"http://localhost:3000/invitados");
+        xhr.open('POST',url);
         xhr.onload = ()=>{resolve(xhr.responseText)};
         xhr.onerror = ()=>{reject(xhr.statusText)};
-        xhr.send(JSON.stringify(data));
+        xhr.send(JSON.stringify({"id":ident++,"nombre":dato,"confirmado":false}));
       });
       const datos = JSON.parse(añadir);
-      console.log(datos);
     } catch (error) {
-      console.log(error);
+      alert(error);
+    }
+  };
+
+  const dele = async (id)=>{
+    try {
+      const borrar = await new Promise((resolve,reject)=>{
+        xhr.open('DELETE',url+`/${id}`);
+        xhr.onload = ()=>{resolve(xhr.responseText)};
+        xhr.onerror = ()=>{reject(xhr.statusText)};
+        xhr.send();
+      });
+      const datos = JSON.parse(borrar);
+      alert(datos);
+    } catch (error) {
+      alert(error);
     }
   }
 
   const update = async (id,dato)=>{
     try {
       const nuevo = await new Promise((resolve,reject)=>{
-        xhr.open('GET',"http://localhost:3000/invitados");
+        xhr.open('PUT',url+`/${id}`);
         xhr.onload = ()=>{resolve(xhr.responseText)};
         xhr.onerror = ()=>{reject(xhr.statusText)};
-        xhr.send(JSON.stringify(data));
+        xhr.send(JSON.stringify(dato));
       });
       const datos = JSON.parse(nuevo);
-      console.log(datos);
+      alert(datos);
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-  }
+}
 
 const open = async ()=>{
   try {
     const abrir = await new Promise((resolve,reject)=>{
-      xhr.open('GET',"http://localhost:3000/invitados");
+      xhr.open('GET',url);
       xhr.onload = ()=>{resolve(xhr.responseText)};
       xhr.onerror = ()=>{reject(xhr.statusText)};
       xhr.send();
@@ -162,9 +183,10 @@ const open = async ()=>{
       ul.appendChild(li);
     }
   } catch (error) {
-    alert(error)
+    alert(error);
   }
 }
+
 open();
 });  
   
